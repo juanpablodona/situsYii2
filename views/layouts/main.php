@@ -46,7 +46,7 @@ AppAsset::register($this);
         'items' => [
             ['label' => 'Personas', 'url' => ['/person/index']],
             ['label' => 'Propiedades', 'url' => ['/property/index']],
-            ['label' => 'Contact', 'url' => ['/site/contact']],
+            ['label' => 'Contratos', 'url' => ['/contract/index']],
             Yii::$app->user->isGuest ? (
                 '<li>'
                     .Html::a('Iniciar Sesion', '#', [

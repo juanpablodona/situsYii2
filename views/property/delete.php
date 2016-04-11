@@ -35,7 +35,7 @@ $this->params['breadcrumbs'][] = $this->title;
             $(document).on('click', '#aceptButton', function(e){
                 $.ajax({
                     url: $(this).data('url'),
-                    method: 'get',
+                    method: 'post',
                     success: function(data){
                         $(this).parent().html(data.message);
                         $.pjax.reload({container: "#property-grid"});

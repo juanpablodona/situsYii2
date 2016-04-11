@@ -138,11 +138,11 @@ $this->params['breadcrumbs'][] = $this->title;
                     );
                     $(document).on("beforeSubmit", "form#property-form", function (e)
                     {
-                        var form = $(this);
+                        var form = $('#property-form');
 
                         $.ajax({
                             url: "/situsYii2/web/index.php?r=property%2Fupdate&id=" + id + "&submit=true",
-                            data: $("form#person-form").serializeArray(),
+                            data: $("form#property-form").serializeArray(),
                             method: 'POST',
                             success: function (result) {
                                 form.parent().html(result.message);

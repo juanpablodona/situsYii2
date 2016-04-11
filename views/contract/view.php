@@ -23,6 +23,9 @@ $this->params['breadcrumbs'][] = $this->title;
                 'method' => 'post',
             ],
         ]) ?>
+        <?= Html::a('Cobrar', ['update', 'id' => $model->contract_id], ['class' => 'btn btn-primary']) ?>
+        <?= Html::a('Exportar', ['update', 'id' => $model->contract_id], ['class' => 'btn btn-primary']) ?>
+        
     </p>
 
     <?= DetailView::widget([

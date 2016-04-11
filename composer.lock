@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "479407875c975e7dbee0aefcb85e62d5",
-    "content-hash": "5c27dd23827e5c153817a7f3f5d227c6",
+    "hash": "78e37308f7bf491a2bc925e59445092c",
+    "content-hash": "5ab17f732b51303c32316050d66c18fe",
     "packages": [
         {
             "name": "bower-asset/bootstrap",
@@ -58,16 +58,16 @@
         },
         {
             "name": "bower-asset/jquery",
-            "version": "2.2.2",
+            "version": "2.2.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/jquery/jquery-dist.git",
-                "reference": "086d381cd2f3b4b8b0af85ecb2c9593a61e5b4bd"
+                "reference": "af22a351b2ea5801ffb1695abb3bb34d5bed9198"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jquery/jquery-dist/zipball/086d381cd2f3b4b8b0af85ecb2c9593a61e5b4bd",
-                "reference": "086d381cd2f3b4b8b0af85ecb2c9593a61e5b4bd",
+                "url": "https://api.github.com/repos/jquery/jquery-dist/zipball/af22a351b2ea5801ffb1695abb3bb34d5bed9198",
+                "reference": "af22a351b2ea5801ffb1695abb3bb34d5bed9198",
                 "shasum": ""
             },
             "type": "bower-asset-library",
@@ -596,6 +596,31 @@
     ],
     "packages-dev": [
         {
+            "name": "bower-asset/jquery-ui",
+            "version": "1.11.4",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/components/jqueryui.git",
+                "reference": "c34f8dbf3ba57b3784b93f26119f436c0e8288e1"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/components/jqueryui/zipball/c34f8dbf3ba57b3784b93f26119f436c0e8288e1",
+                "reference": "c34f8dbf3ba57b3784b93f26119f436c0e8288e1",
+                "shasum": ""
+            },
+            "require": {
+                "bower-asset/jquery": ">=1.6"
+            },
+            "type": "bower-asset-library",
+            "extra": {
+                "bower-asset-main": [
+                    "jquery-ui.js"
+                ],
+                "bower-asset-ignore": []
+            }
+        },
+        {
             "name": "bower-asset/typeahead.js",
             "version": "v0.11.1",
             "source": {
@@ -676,19 +701,24 @@
         },
         {
             "name": "phpspec/php-diff",
-            "version": "v1.0.2",
+            "version": "v1.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpspec/php-diff.git",
-                "reference": "30e103d19519fe678ae64a60d77884ef3d71b28a"
+                "reference": "0464787bfa7cd13576c5a1e318709768798bec6a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpspec/php-diff/zipball/30e103d19519fe678ae64a60d77884ef3d71b28a",
-                "reference": "30e103d19519fe678ae64a60d77884ef3d71b28a",
+                "url": "https://api.github.com/repos/phpspec/php-diff/zipball/0464787bfa7cd13576c5a1e318709768798bec6a",
+                "reference": "0464787bfa7cd13576c5a1e318709768798bec6a",
                 "shasum": ""
             },
             "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0.x-dev"
+                }
+            },
             "autoload": {
                 "psr-0": {
                     "Diff": "lib/"
@@ -701,12 +731,11 @@
             "authors": [
                 {
                     "name": "Chris Boulton",
-                    "homepage": "http://github.com/chrisboulton",
-                    "role": "Original developer"
+                    "homepage": "http://github.com/chrisboulton"
                 }
             ],
             "description": "A comprehensive library for generating differences between two hashable objects (strings or arrays).",
-            "time": "2013-11-01 13:02:21"
+            "time": "2016-04-07 12:29:16"
         },
         {
             "name": "yiisoft/yii2-codeception",
@@ -899,6 +928,56 @@
                 "yii2"
             ],
             "time": "2016-03-18 14:09:46"
+        },
+        {
+            "name": "yiisoft/yii2-jui",
+            "version": "2.0.5",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/yiisoft/yii2-jui.git",
+                "reference": "37991d06ad952eead7bd5bb839c9a352d9b5e34a"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/yiisoft/yii2-jui/zipball/37991d06ad952eead7bd5bb839c9a352d9b5e34a",
+                "reference": "37991d06ad952eead7bd5bb839c9a352d9b5e34a",
+                "shasum": ""
+            },
+            "require": {
+                "bower-asset/jquery-ui": "1.11.*@stable",
+                "yiisoft/yii2": ">=2.0.4"
+            },
+            "type": "yii2-extension",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.0.x-dev"
+                },
+                "asset-installer-paths": {
+                    "npm-asset-library": "vendor/npm",
+                    "bower-asset-library": "vendor/bower"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "yii\\jui\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Qiang Xue",
+                    "email": "qiang.xue@gmail.com"
+                }
+            ],
+            "description": "The Jquery UI extension for the Yii framework",
+            "keywords": [
+                "jQuery UI",
+                "yii2"
+            ],
+            "time": "2016-03-17 03:53:41"
         }
     ],
     "aliases": [],
