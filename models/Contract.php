@@ -28,6 +28,8 @@ use Yii;
  */
 class Contract extends \yii\db\ActiveRecord
 {
+    
+    private $_persons;
     /**
      * @inheritdoc
      */
@@ -110,6 +112,40 @@ class Contract extends \yii\db\ActiveRecord
      */
     public function getPersonContracts()
     {
-        return $this->hasMany(PersonContract::className(), ['contract_id' => 'contract_id']);
+        return $this->hasMany(Contract::className(), ['contract_id' => 'contract_id'])
+                ->viaTable('person_contract', ['contract_id'=> 'contract_id']);
+    }
+    
+    public static function setPersonContracts(array $persons){
+        
+        if (empty($persons)) {
+            $this->_persons=[];
+        }
+        
+        $this->_persons= $persons;
+        
+        $personContract= function (){
+            $this->unlinkAll('personContracts', true);
+            foreach ($this->_persons as $key => $person){
+                
+                $p= Person::findOne($person[id]);
+                $this->link('personContracts', $p, [
+                    'person_id'=> $p->person_id, 
+                    'contract_id' => $this->contract_id, 
+                    'role'=> $p->role]);
+            }
+            
+            
+        };
+        $this->on(self::EVENT_AFTER_INSERT, $personContract);
+        $this->on(self::EVENT_AFTER_UPDATE, $personContract);
+        
+    }
+    
+    public function getTotalMount(){
+        $date= date('Y');
+        
+        
+        return $this->amount + (($this->commission*$this->amount)/100);
     }
 }

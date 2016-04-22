@@ -53,9 +53,12 @@ class ContractController extends Controller
      * @return mixed
      */
     public function actionView($id)
-    {
+    {   
+        $contract= $this->findModel($id);
+        $dataProvider= new ActiveDataProvider(['query' => $contract->getCharges()]);
+        $dataProvider2= new ActiveDataProvider(['query' => $contract->getPayments()]);
         return $this->renderAjax('view', [
-            'model' => $this->findModel($id),
+            'model' => $contract, 'charges'=> $dataProvider, 'payments'=> $dataProvider2
         ]);
     }
 
@@ -67,26 +70,42 @@ class ContractController extends Controller
     public function actionCreate($submit= FALSE)
     {
         $model = new Contract();
-
+        
+        $persons= \app\models\Person::find()->all();
+        $locator= array();
+        $owner=array();
+        $gurantor=array();
+        $receiver=array();
+        
+        
         if (Yii::$app->request->isAjax && $model->load(Yii::$app->request->post()) && $submit== FALSE) {
             Yii::$app->response->format==Response::FORMAT_JSON;
             return json_encode(ActiveForm::validate($model));
         }
         
         if ($model->load(Yii::$app->request->post())) {
+            
             if($model->save()){
+                //$model->setPersonContracts($persons, $role);
                 $model->refresh();
                 Yii::$app->response->format==Response::FORMAT_JSON;
-                return json_encode(['message' => 'Contrato creado con exito']);
+                return json_encode(['status'=> '1', 'contract_id'=> $model->contract_id]);
             } else {
                 Yii::$app->response->format==Response::FORMAT_JSON;
                 return json_encode(ActiveForm::validate($model));
             }
         }
         
-        $properties= ArrayHelper::map(\app\models\Property::find()->all(), 'property_id', 'name');
         
-        return $this->renderAjax('create', ['model' => $model, 'properties' => $properties]);
+        
+        $propertiesArray= \app\models\Property::find()->all();
+        foreach ($propertiesArray as $prop) {
+            $prop->setDirection();
+        }
+        
+        $properties= ArrayHelper::map($propertiesArray, 'property_id', 'direction');
+        
+        return $this->renderAjax('create', ['model' => $model, 'properties' => $properties, ]);
     }
 
     /**
@@ -135,6 +154,16 @@ class ContractController extends Controller
         }
         
         return $this->renderAjax('delete', ['model' =>$model] );
+    }
+    
+    
+    public static function actionSetpersons($submit= FALSE, $contract_id){
+        
+        if ($submit) {
+            
+        }else{
+            return $this->renderAjax('setpersons', ['contract_id'=> $contract_id]);
+        }
     }
 
     /**

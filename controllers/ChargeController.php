@@ -2,12 +2,14 @@
 
 namespace app\controllers;
 
-use Yii;
 use app\models\Charge;
+use Yii;
 use yii\data\ActiveDataProvider;
+use yii\filters\VerbFilter;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
-use yii\filters\VerbFilter;
+use yii\web\Response;
+use yii\widgets\ActiveForm;
 
 /**
  * ChargeController implements the CRUD actions for Charge model.
@@ -51,7 +53,7 @@ class ChargeController extends Controller
      */
     public function actionView($id)
     {
-        return $this->render('view', [
+        return $this->renderAjax('view', [
             'model' => $this->findModel($id),
         ]);
     }
@@ -61,17 +63,31 @@ class ChargeController extends Controller
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
-    public function actionCreate()
+    public function actionCreate($contract_id, $submit= FALSE)
     {
         $model = new Charge();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->charge_id]);
-        } else {
-            return $this->render('create', [
-                'model' => $model,
-            ]);
+        if (Yii::$app->request->isAjax && $model->load(Yii::$app->request->post()) && $submit== FALSE) {
+            Yii::$app->response->format==Response::FORMAT_JSON;
+            return json_encode(ActiveForm::validate($model));
         }
+        
+        if ($model->load(Yii::$app->request->post())) {
+            if($model->save()){
+                $model->refresh();
+                return TRUE;
+            } else {
+                Yii::$app->response->format==Response::FORMAT_JSON;
+                return json_encode(ActiveForm::validate($model));
+            }
+        }
+        
+        $contract= \app\models\Contract::findOne(['contract_id'=>$contract_id]);
+        
+        
+        
+        
+        return $this->renderAjax('create', ['model' => $model, 'contract' => $contract]);
     }
 
     /**
@@ -80,17 +96,28 @@ class ChargeController extends Controller
      * @param integer $id
      * @return mixed
      */
-    public function actionUpdate($id)
+    public function actionUpdate($id, $submit=FALSE)
     {
         $model = $this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->charge_id]);
-        } else {
-            return $this->render('update', [
-                'model' => $model,
-            ]);
+        if (Yii::$app->request->isAjax && $model->load(Yii::$app->request->post()) && $submit== FALSE) {
+            Yii::$app->response->format==Response::FORMAT_JSON;
+            return json_encode(ActiveForm::validate($model));
         }
+        
+        if ($model->load(Yii::$app->request->post())) {
+            if($model->save()){
+                $model->refresh();
+                return TRUE;
+            } else {
+                Yii::$app->response->format==Response::FORMAT_JSON;
+                return json_encode(ActiveForm::validate($model));
+            }
+        }
+        
+        $contract= $model->contract;
+        
+        return $this->renderAjax('update', ['model' => $model, 'contract'=> $contract]);
     }
 
     /**
@@ -99,11 +126,17 @@ class ChargeController extends Controller
      * @param integer $id
      * @return mixed
      */
-    public function actionDelete($id)
+    public function actionDelete($id, $ok= FALSE)
     {
-        $this->findModel($id)->delete();
-
-        return $this->redirect(['index']);
+        $model=$this->findModel($id);
+        
+        if ($ok) {
+            $model->delete();
+            return TRUE;
+        }else{
+            return $this->renderAjax('delete', ['model'=> $model]);
+        } 
+        
     }
 
     /**

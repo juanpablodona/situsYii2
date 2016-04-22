@@ -12,13 +12,12 @@ use yii\filters\VerbFilter;
 /**
  * PaymentController implements the CRUD actions for Payment model.
  */
-class PaymentController extends Controller
-{
+class PaymentController extends Controller {
+
     /**
      * @inheritdoc
      */
-    public function behaviors()
-    {
+    public function behaviors() {
         return [
             'verbs' => [
                 'class' => VerbFilter::className(),
@@ -33,14 +32,13 @@ class PaymentController extends Controller
      * Lists all Payment models.
      * @return mixed
      */
-    public function actionIndex()
-    {
+    public function actionIndex() {
         $dataProvider = new ActiveDataProvider([
             'query' => Payment::find(),
         ]);
 
         return $this->render('index', [
-            'dataProvider' => $dataProvider,
+                    'dataProvider' => $dataProvider,
         ]);
     }
 
@@ -49,10 +47,9 @@ class PaymentController extends Controller
      * @param integer $id
      * @return mixed
      */
-    public function actionView($id)
-    {
-        return $this->render('view', [
-            'model' => $this->findModel($id),
+    public function actionView($id) {
+        return $this->renderAjax('view', [
+                    'model' => $this->findModel($id),
         ]);
     }
 
@@ -61,17 +58,29 @@ class PaymentController extends Controller
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
-    public function actionCreate()
-    {
+    public function actionCreate($charge_id, $submit = FALSE) {
         $model = new Payment();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->payment_id]);
-        } else {
-            return $this->render('create', [
-                'model' => $model,
-            ]);
+        if (Yii::$app->request->isAjax && $model->load(Yii::$app->request->post()) && $submit == FALSE) {
+            Yii::$app->response->format == \yii\web\Response::FORMAT_JSON;
+            return json_encode(\yii\widgets\ActiveForm::validate($model));
         }
+
+        if ($model->load(Yii::$app->request->post())) {
+            if ($model->save()) {
+                $model->refresh();
+                Yii::$app->response->format == \yii\web\Response::FORMAT_JSON;
+                return 1;
+            } else {
+                Yii::$app->response->format == \yii\web\Response::FORMAT_JSON;
+                return json_encode(\yii\widgets\ActiveForm::validate($model));
+            }
+        }
+        
+        $charge= \app\models\Charge::findOne($charge_id); 
+           
+        return $this->renderAjax('create', ['model' => $model, 'charge'=> $charge ]);
+        
     }
 
     /**
@@ -80,17 +89,26 @@ class PaymentController extends Controller
      * @param integer $id
      * @return mixed
      */
-    public function actionUpdate($id)
-    {
+    public function actionUpdate($id, $submit= FALSE) {
         $model = $this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->payment_id]);
-        } else {
-            return $this->render('update', [
-                'model' => $model,
-            ]);
+        if (Yii::$app->request->isAjax && $model->load(Yii::$app->request->post()) && $submit == FALSE) {
+            Yii::$app->response->format == \yii\web\Response::FORMAT_JSON;
+            return json_encode(\yii\widgets\ActiveForm::validate($model));
         }
+
+        if ($model->load(Yii::$app->request->post())) {
+            if ($model->save()) {
+                $model->refresh();
+                Yii::$app->response->format == \yii\web\Response::FORMAT_JSON;
+                return 1;
+            } else {
+                Yii::$app->response->format == \yii\web\Response::FORMAT_JSON;
+                return json_encode(\yii\widgets\ActiveForm::validate($model));
+            }
+        }
+           
+        return $this->renderAjax('update', ['model' => $model,]);
     }
 
     /**
@@ -99,11 +117,16 @@ class PaymentController extends Controller
      * @param integer $id
      * @return mixed
      */
-    public function actionDelete($id)
-    {
-        $this->findModel($id)->delete();
-
-        return $this->redirect(['index']);
+    public function actionDelete($id, $ok=FALSE) {
+        $model=$this->findModel($id);
+        
+        if ($ok) {
+            $model->delete();
+            return TRUE;
+        }else{
+            return $this->renderAjax('delete', ['model'=> $model]);
+        } 
+        
     }
 
     /**
@@ -113,12 +136,12 @@ class PaymentController extends Controller
      * @return Payment the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
-    protected function findModel($id)
-    {
+    protected function findModel($id) {
         if (($model = Payment::findOne($id)) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
         }
     }
+
 }

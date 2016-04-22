@@ -90,6 +90,7 @@ $this->params['breadcrumbs'][] = $this->title;
             ?>
              <?php Pjax::end() ?>
             <script>
+                
                 var ContractForm = new function () {
                     this.init = function () {
                         $(document).on('click', '#newCon', function () {
@@ -98,30 +99,9 @@ $this->params['breadcrumbs'][] = $this->title;
                                     function (data) {
                                         $('.modal-body').html(data);
                                         $('#modal').modal();
-                                    }
-                            );
-                            $(document).on("beforeSubmit", "form#contract-form", function (e)
-                            {
-                                var form = $(this);
-
-                                $.ajax({
-                                    url: "/situsYii2/web/index.php?r=contract%2Fcreate&submit=true",
-                                    data: $("form#contract-form").serializeArray(),
-                                    method: 'POST',
-                                    success: function (result) {
-                                        form.parent().html(result.message);
-                                        $.pjax.reload({container: "#contract-grid"});
-                                    },
-                                    datatype: 'json'
-                                });
-
-                                return false;
-                            });
-                            $(document).on("submit", "form#contract-form", function (e) {
-                                e.preventDefault();
-                                e.stopImmediatePropagation();
-                                return false;
-                            });
+                            }
+                        );
+                            
                         });
                     };
                 };
@@ -221,5 +201,8 @@ $this->params['breadcrumbs'][] = $this->title;
             echo "<div class='well'></div>";
 
             Modal::end();
+            ?>
+            
+            
             ?>    
 </div>

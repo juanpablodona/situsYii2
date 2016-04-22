@@ -30,6 +30,8 @@ class Property extends \yii\db\ActiveRecord
     {
         return 'property';
     }
+    
+    public $direction;
 
     /**
      * @inheritdoc
@@ -95,5 +97,9 @@ class Property extends \yii\db\ActiveRecord
     public function getLocality()
     {
         return $this->hasOne(Locality::className(), ['locality_id' => 'locality_id']);
+    }
+    
+    public function setDirection(){
+        $this->direction= $this->street . ' '. $this->street_number;
     }
 }

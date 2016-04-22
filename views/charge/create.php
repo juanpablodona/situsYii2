@@ -6,7 +6,7 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model app\models\Charge */
 
-$this->title = 'Create Charge';
+$this->title = 'Nuevo Cobro';
 $this->params['breadcrumbs'][] = ['label' => 'Charges', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
@@ -16,6 +16,8 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <?= $this->render('_form', [
         'model' => $model,
+        'contract'=> $contract,
+        
     ]) ?>
 
 </div>
