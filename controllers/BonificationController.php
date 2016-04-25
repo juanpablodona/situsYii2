@@ -58,34 +58,37 @@ class BonificationController extends Controller {
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
-    public function actionCreate($submit = FALSE, $duration=0, $contract_id=0) {
+    public function actionCreate($submit = FALSE, $duration = 0, $contract_id = 0) {
         $models = array();
-        for ($index = 0; $index < ($duration-1); $index++) {
-            array_push($models, new Bonification());
+        if (!$submit) {
+            for ($index = 0; $index < ($duration - 1); $index++) {
+                array_push($models, new Bonification());
+            }
+        }else{
+            foreach (json_decode(Yii::$app->request->getParams()['Bonification']) as $b){
+                $bonification= new Bonification;
+                $bonification->year=$b->year;
+                $bonification->amount= $b->amount;
+                $bonification->contract_id= $b->contract_id;
+                array_push($models, $bonification);
+            }
         }
 
-        if (Yii::$app->request->isAjax && \yii\base\Model::loadMultiple($models, Yii::$app->request->post()) && $submit == FALSE) {
-            Yii::$app->response->format == \yii\web\Response::FORMAT_JSON;
-            return json_encode(\yii\base\Model::validateMultiple($models));
-        }
-
-        if (\yii\base\Model::loadMultiple($models, Yii::$app->request->post())) {
+        if ($submit) {
             foreach ($models as $model) {
                 if ($model->save()) {
                     $model->refresh();
-                    
-                }else{
+                } else {
                     return 0;
                 }
             }
-            
+
             return 1;
-            
         }
 
-        $contract_mount= \app\models\Contract::findOne($contract_id)->amount;
-        
-        return $this->renderAjax('create', ['model' => $models, 'duration' => $duration, 'contract_id'=> $contract_id, 'contract_mount'=> $contract_mount]);
+        $contract_mount = \app\models\Contract::findOne($contract_id)->amount;
+
+        return $this->renderAjax('create', ['model' => $models, 'duration' => $duration, 'contract_id' => $contract_id, 'contract_mount' => $contract_mount]);
     }
 
     /**

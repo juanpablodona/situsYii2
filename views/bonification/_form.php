@@ -24,14 +24,14 @@ use yii\widgets\ActiveForm;
 
             <tr>
                 <td>
-                    <?=$form->field($mod, "[$i]year")->textInput(['value' => ($i + 1), 'readonly' => TRUE])?>
+                    <?=$form->field($mod, "[$i]year")->textInput(['value' => ($i + 1), 'readonly' => TRUE, 'id'=> 'y'.$i])?>
                         
                 </td>
                 <td>
                     <?=$form->field($mod, "[$i]amount")->textInput(['id'=>'b'.$i, 'onchange' => 'bonificatedMount('.$i.')'])?>  
                 </td> 
                 <td> 
-                     <?=$form->field($mod, "[$i]contract_id")->hiddenInput(['value'=> $contract_id])->label('')?> 
+                     <?=$form->field($mod, "[$i]contract_id")->hiddenInput(['value'=> $contract_id, 'id'=>'co'.$i])->label('')?> 
                 </td>
                 <td>Cuota año 1: <span id="c<?=$i?>"></span></td>
             </tr>
@@ -39,7 +39,7 @@ use yii\widgets\ActiveForm;
         <?php endforeach; ?>
             <tr><td colspan="2">            
         <div class="form-group">
-            <?= Html::submitButton('Siguiente', [ 'class'=> 'btn btn-success']) ?>
+            <?= Html::submitButton('Siguiente', [ 'class'=> 'btn btn-success', 'id' => 'formButton']) ?>
         </div>
                 </td></tr>
         <?php ActiveForm::end(); ?>
@@ -52,8 +52,9 @@ use yii\widgets\ActiveForm;
         
         var Bonifications= new function(){
             this.mount=<?=$contract_mount?>;
+            this.bonificationsArray= [];
             this. init= function (){
-                $(document).on("beforeSubmit", "form#bonification-form", function(e){
+                $(document).on("click", "#formButton", function(e){
                     beforeSubmit(e);
                 });
                 $(document).on("submit", "form#bonification-form", function(e){
@@ -64,9 +65,11 @@ use yii\widgets\ActiveForm;
             
             function beforeSubmit(e){
                 
+                
+                
                 $.ajax({
                     url: '<?= Url::to(['bonification/create']) ?>' + '&submit=true',
-                    data: $('form#bonification-form').serializeArray(),
+                    data: {Bonification: JSON.stringify(Bonifications.bonificationsArray)},
                     method: 'POST',
                     success: function (result) {
                         if (result === '1') {
@@ -103,6 +106,15 @@ use yii\widgets\ActiveForm;
         }
         function bonificatedMount(i){
                 $('#c'+ i).html(parseFloat(Bonifications.mount) - parseFloat($('#b'+ i).val()));
+                var b= {
+                    year: $('#y'+ i).val(),
+                    amount: $('#b' + i).val(),
+                    contrac_id: $('#co' + i).val()
+                };
+                
+                Bonifications.bonificationsArray.push(b);
+                
+                
         }
 </script>
 <?= $this->registerJs('Bonifications.init()')?>
